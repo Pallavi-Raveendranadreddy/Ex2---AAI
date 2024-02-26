@@ -58,6 +58,8 @@ print(result2)
 
 ## Output:
 ![image](https://github.com/Pallavi-Raveendranadreddy/Ex2---AAI/assets/94294872/900cfecf-49fc-415a-8888-5d697131f160)
+![image](https://github.com/Pallavi-Raveendranadreddy/Ex2---AAI/assets/94294872/42d5aca0-7334-435e-89f3-ffe6093ded8a)
+
 
 
 ## Result:
