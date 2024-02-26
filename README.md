@@ -27,29 +27,38 @@ Developed By:VALASAREDDY PALLAVI.
 Reg.No:212221240059.
 ```
 ```
-import numpy as np
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import accuracy_score
-class BayesClassifier:
-  def __init__(self):
-    self.clf = GaussianNB()
-  def fit(self, X, y):
-    self.clf.fit(X, y)
-  def predict(self, X):
-    return self.clf.predict(X)
-ir = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(ir.data, ir.target,test_size=0.33, random_state = 33)
-clf = BayesClassifier()
-clf.fit(X_train, y_train)
-y_pred = clf.predict(X_test)
-accu = accuracy_score(y_test, y_pred)
-print("Accuracy:",accu*100)
+from pgmpy.models import BayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+from pgmpy.inference import VariableElimination
+
+network=BayesianNetwork([
+    ('Burglary','Alarm'),
+    ('Earthquake','Alarm'),
+    ('Alarm','JohnCalls'),
+    ('Alarm','MaryCalls')
+])
+cpd_burglary = TabularCPD(variable='Burglary',variable_card=2,values=[[0.999],[0.001]])
+cpd_earthquake = TabularCPD(variable='Earthquake',variable_card=2,values=[[0.998],[0.002]])
+cpd_alarm = TabularCPD(variable ='Alarm',variable_card=2, values=[[0.999, 0.71, 0.06, 0.05],[0.001, 0.29, 0.94, 0.95]],evidence=['Burglary','Earthquake'],evidence_card=[2,2])
+cpd_john_calls = TabularCPD(variable='JohnCalls',variable_card=2,values=[[0.95,0.1],[0.05,0.9]],evidence=['Alarm'],evidence_card=[2])
+cpd_mary_calls = TabularCPD(variable='MaryCalls',variable_card=2,values=[[0.99,0.3],[0.01,0.7]],evidence=['Alarm'],evidence_card=[2])
+network.add_cpds(cpd_burglary,cpd_earthquake,cpd_alarm,cpd_john_calls,cpd_mary_calls)
+
+inference = VariableElimination(network)
+evidence ={'JohnCalls':1,'MaryCalls':0}
+query_variable ='Burglary'
+result = inference.query(variables=[query_variable],evidence=evidence)
+print(result)
+evidence1 ={'JohnCalls':1,'MaryCalls':1}
+query_variable ='Burglary'
+result2 = inference.query(variables=[query_variable],evidence=evidence)
+print(result2)
+
 ```
 
 ## Output:
-<img width="228" alt="image" src="https://github.com/nithin-popuri7/Bayes-Classifier/assets/94154780/1a110c33-7917-461b-9054-2c5a59e06b91">
+![image](https://github.com/Pallavi-Raveendranadreddy/Ex2---AAI/assets/94294872/900cfecf-49fc-415a-8888-5d697131f160)
+
 
 ## Result:
 Hence, Bayes classifier for iris dataset is implemented successfully
